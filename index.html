@@ -38,9 +38,15 @@
             .btn-enter { padding:10px 20px !important; font-size:.78rem !important; }
         }
 
-        /* HERO — comparativa de 2 locaciones, sin foto única para no mezclar identidades de venue */
+        /* HERO — comparativa de 2 locaciones: split de fotos reales de ambos venues, sin favorecer a ninguno */
         .hero { position:relative; height:48vh; min-height:340px; overflow:hidden; display:flex; align-items:flex-end; justify-content:center; background:linear-gradient(135deg,var(--primary-dark) 0%,var(--dark-grad-end) 100%); }
-        .hero::before { content:''; position:absolute; inset:0; background:linear-gradient(to bottom, rgba(31,31,31,.2), rgba(31,31,31,.85)); z-index:1; }
+        .hero-bg { position:absolute; top:0; bottom:0; width:50%; background-size:cover; background-position:center; z-index:0; }
+        .hero-bg-left { left:0; }
+        .hero-bg-right { right:0; }
+        .hero-bg-label { position:absolute; bottom:14px; font-size:.68rem; letter-spacing:2px; text-transform:uppercase; font-weight:700; color:rgba(255,255,255,.9); text-shadow:0 2px 6px rgba(0,0,0,.7); }
+        .hero-bg-left .hero-bg-label { left:16px; }
+        .hero-bg-right .hero-bg-label { right:16px; }
+        .hero::before { content:''; position:absolute; inset:0; background:linear-gradient(to bottom, rgba(31,31,31,.35), rgba(31,31,31,.88)); z-index:1; }
         .hero-content { position:relative; z-index:2; text-align:center; padding:0 20px 60px; color:var(--white); max-width:800px; }
         .hero-eyebrow { font-size:.8rem; letter-spacing:5px; text-transform:uppercase; color:var(--gold-accent); font-weight:600; margin-bottom:12px; }
         .hero h1 { font-size:3rem; font-weight:700; line-height:1.1; text-shadow:0 3px 20px rgba(0,0,0,.6); margin-bottom:10px; }
@@ -132,6 +138,30 @@
         .calc-item-price { font-size:.8rem; font-weight:700; color:var(--gold-accent); white-space:nowrap; }
         .calc-category-title { font-size:.8rem; text-transform:uppercase; letter-spacing:1px; color:var(--gray-text); margin:22px 0 10px; font-weight:700; }
         .calc-category-title:first-child { margin-top:0; }
+
+        .calc-total-box { background:linear-gradient(135deg,var(--primary-dark) 0%,var(--dark-grad-end) 100%); border-radius:18px; padding:18px 22px; margin-bottom:22px; }
+
+        /* Placa fija de gran total — aparece al llegar al cotizador dinámico y muestra AMBOS totales (Solaire y Villa Leona) */
+        .sticky-total-bar { position:fixed; left:0; right:0; bottom:0; z-index:900; background:linear-gradient(135deg,var(--primary-dark) 0%,var(--dark-grad-end) 100%); border-top:1px solid rgba(255,255,255,.12); box-shadow:0 -10px 30px rgba(0,0,0,.3); padding:12px 20px 14px; transform:translateY(100%); opacity:0; transition:transform .35s ease, opacity .35s ease; pointer-events:none; }
+        .sticky-total-bar.visible { transform:translateY(0); opacity:1; pointer-events:auto; }
+        .stb-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:center; gap:30px; flex-wrap:wrap; }
+        .stb-venue { display:flex; flex-direction:column; align-items:center; min-width:140px; }
+        .stb-venue-name { font-size:.66rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--gold-accent); font-weight:700; margin-bottom:2px; }
+        .stb-venue-total { font-size:1.3rem; font-weight:700; color:var(--white); font-family:var(--font-serif); }
+        .stb-sep { width:1px; height:32px; background:rgba(255,255,255,.15); }
+        .stb-caption { text-align:center; font-size:.66rem; color:rgba(255,255,255,.45); margin-top:3px; }
+
+        body.has-sticky-total .floating-actions-container { bottom:92px; transition:bottom .35s ease; }
+        body.has-sticky-total .audio-toggle { bottom:92px; transition:bottom .35s ease; }
+
+        @media (max-width:768px) {
+            .sticky-total-bar { padding:9px 12px 11px; }
+            .stb-inner { gap:14px; }
+            .stb-venue { min-width:100px; }
+            .stb-venue-total { font-size:1.05rem; }
+            .stb-sep { height:26px; }
+            body.has-sticky-total .floating-actions-container, body.has-sticky-total .audio-toggle { bottom:80px; }
+        }
 
         .complementos-section { margin-top:50px; padding-top:40px; border-top:1px solid var(--beige); width:100% !important; max-width:100% !important; box-sizing:border-box !important; }
         .complementos-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:22px; margin-top:20px; width:100% !important; max-width:100% !important; box-sizing:border-box !important; }
@@ -258,7 +288,7 @@
         .flag-note i { color:var(--gold-accent); margin-right:6px; }
 
         @media print {
-            #preloader, .floating-actions-container, .pdf-section,
+            #preloader, .floating-actions-container, .pdf-section, .sticky-total-bar,
             .kit-section, .cta-container, audio, .audio-toggle,
             .expo-section, .publicidad-section, .signature-section, .complementos-section,
             .includes-grid, .gallery-block-title, .calc-total-box, .calc-hint, .compare-controls,
@@ -296,6 +326,10 @@
             .section-title { font-size:11.5pt !important; margin:16px 0 8px !important; padding-bottom:4px !important;
                 color:var(--primary-pink); border-bottom:1px solid var(--gold-accent) !important; font-family:'Playfair Display', serif; page-break-after:avoid !important; break-after:avoid !important; }
             .section-title i { color:var(--gold-accent) !important; font-size:9.5pt !important; margin-right:4px; }
+
+            /* Hoja 1 = intro + comparativa (hasta Opción B) · Hoja 2 = desglose Solaire · Hoja 3 = desglose Villa Leona */
+            .venue-block { page-break-before:always !important; break-before:page !important; margin-top:0 !important; padding-top:8px !important; border-top:none !important; }
+            .venue-block-header { page-break-inside:avoid !important; break-inside:avoid !important; }
 
             .pricing-table-container { border:1px solid #E2D9D0 !important; border-radius:8px !important; margin-bottom:16px !important; overflow:visible !important; page-break-inside:auto !important; break-inside:auto !important; }
             .pricing-table { font-size:8pt !important; line-height:1.35 !important; width:100% !important; border-collapse:collapse !important; }
@@ -359,6 +393,8 @@
     <button class="audio-toggle" id="audioToggle" title="Activar/Silenciar música"><i class="fas fa-volume-mute"></i></button>
 
     <header class="hero">
+        <div class="hero-bg hero-bg-left" style="background-image:url('solaire_jardin_1.jpg')"><span class="hero-bg-label">Jardín Solaire</span></div>
+        <div class="hero-bg hero-bg-right" style="background-image:url('villa_leona_jardin_lounge.jpg')"><span class="hero-bg-label">Villa Leona</span></div>
         <div class="hero-content">
             <p class="hero-eyebrow">PROPUESTA COMPARATIVA PARA JENNIFER</p>
             <h1>Tu Boda: Solaire &amp; Villa Leona</h1>
@@ -746,6 +782,22 @@
         </div>
     </footer>
 
+    <!-- ══ Placa fija de gran total (aparece al llegar al cotizador dinámico) ══ -->
+    <div class="sticky-total-bar" id="stickyTotalBar" aria-hidden="true">
+        <div class="stb-inner">
+            <div class="stb-venue">
+                <span class="stb-venue-name">🌿 Solaire</span>
+                <span class="stb-venue-total" id="stbSolaireTotal">$146,750</span>
+            </div>
+            <div class="stb-sep"></div>
+            <div class="stb-venue">
+                <span class="stb-venue-name">🦁 Villa Leona</span>
+                <span class="stb-venue-total" id="stbLeonaTotal">$175,365</span>
+            </div>
+        </div>
+        <div class="stb-caption">Gran total estimado · incluye extras seleccionados</div>
+    </div>
+
     <!-- ══ Floating Actions ══ -->
     <div class="floating-actions-container">
         <div class="fab-group" id="socialGroup">
@@ -859,6 +911,9 @@
         document.getElementById('ctbSolaireConExtras').textContent = moneyRound(sFinal);
         document.getElementById('ctbLeonaConExtras').textContent = moneyRound(lFinal);
 
+        document.getElementById('stbSolaireTotal').textContent = moneyRound(sFinal);
+        document.getElementById('stbLeonaTotal').textContent = moneyRound(lFinal);
+
         const seleccion = Object.values(extrasSeleccionados);
         document.getElementById('ctbExtras').innerHTML = seleccion
             .map(e => `<li style="display:flex; justify-content:space-between; gap:10px; font-size:.78rem; color:rgba(255,255,255,.85); padding:3px 0;"><span>+ ${e.nombre}</span><span>${moneyFmt(e.precio)}</span></li>`)
@@ -901,6 +956,24 @@
 
     renderCalculador();
     actualizarTotales();
+
+    (function(){
+        var bar = document.getElementById('stickyTotalBar');
+        var trigger = document.querySelector('.calc-section');
+        if (!bar || !trigger) return;
+        var ticking = false;
+        function update(){
+            var show = trigger.getBoundingClientRect().top <= window.innerHeight * 0.6;
+            bar.classList.toggle('visible', show);
+            document.body.classList.toggle('has-sticky-total', show);
+            ticking = false;
+        }
+        window.addEventListener('scroll', function(){
+            if (!ticking) { requestAnimationFrame(update); ticking = true; }
+        }, { passive:true });
+        window.addEventListener('resize', update);
+        update();
+    })();
 
     // Preloader / audio
     const bgAudio = document.getElementById('bgAudio');
